@@ -1,0 +1,1 @@
+# mission-planer has no meson options after split (TaskManager is in ../task-manager).

@@ -1,0 +1,12 @@
+build/
+build-*/
+.meson-private/
+*.o
+*.a
+compile_commands.json
+
+# Meson subproject cache (tarballs); extracted trees under subprojects/ are kept
+subprojects/packagecache/
+
+# Runtime task workspaces
+var/

@@ -6,6 +6,7 @@
   "plugin_executable": "mission-planer",
   "payload": {
     "request_id": "req_short_001",
+    "dry_run": true,
     "task": {
       "scenario": "remote_sensing_access",
       "start_time_utc": "2026-12-30T00:00:00Z",

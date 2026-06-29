@@ -51,7 +51,7 @@ install_data(
 
 install_data(
   'configs/plugins/mission-planer.json',
-  install_dir: get_option('datadir') / 'mission-planer/plugins',
+  install_dir: get_option('datadir') / 'satellite/plugins',
 )
 
 install_data(

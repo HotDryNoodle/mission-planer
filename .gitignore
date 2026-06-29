@@ -5,8 +5,12 @@ build-*/
 *.a
 compile_commands.json
 
-# Meson subproject cache (tarballs); extracted trees under subprojects/ are kept
-subprojects/packagecache/
+# Meson subprojects — track wraps and overlays only
+/subprojects/*
+!/subprojects/*.wrap
+!/subprojects/packagefiles/
+!/subprojects/README.md
+/subprojects/packagecache/
 
 # Runtime task workspaces
 var/

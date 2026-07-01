@@ -1,4 +1,4 @@
-#include "mp/gmat/gmat_backend.hpp"
+#include "gmat/gmat_backend.hpp"
 
 #include <algorithm>
 #include <cstdlib>

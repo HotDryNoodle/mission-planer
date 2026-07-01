@@ -4,10 +4,10 @@
 #include <string>
 #include <vector>
 
-#include "mp/common/exit_codes.hpp"
-#include "mp/common/json_io.hpp"
-#include "mp/planner/run_planner.hpp"
-#include "mp/planner/validate.hpp"
+#include "satellite/exit_codes.hpp"
+#include "satellite/json_io.hpp"
+#include "planner/run_planner.hpp"
+#include "planner/validate.hpp"
 
 namespace {
 
@@ -126,29 +126,29 @@ int main(int argc, char** argv) {
         const std::string first = argv[1];
         if (first == "--version") {
             std::cout << "mission-planer " << kVersion << '\n';
-            return mp::EXIT_OK;
+            return satellite::EXIT_OK;
         }
         if (first == "--help" || first == "-h") {
             print_global_usage();
-            return mp::EXIT_OK;
+            return satellite::EXIT_OK;
         }
     }
 
     CliOptions opts;
     if (!parse_args(argc, argv, opts)) {
         print_global_usage();
-        return mp::EXIT_USAGE;
+        return satellite::EXIT_USAGE;
     }
 
     if (opts.show_help) {
         print_command_help(opts.command);
-        return mp::EXIT_OK;
+        return satellite::EXIT_OK;
     }
 
     try {
         if (opts.command == "manifest") {
-            mp::write_json_stdout(mp::make_manifest(), opts.pretty);
-            return mp::EXIT_OK;
+            satellite::write_json_stdout(mp::make_manifest(), opts.pretty);
+            return satellite::EXIT_OK;
         }
 
         if (opts.command == "validate") {
@@ -156,17 +156,17 @@ int main(int argc, char** argv) {
                 std::cerr << "Error: --input request.json or --stdin is required for validate\n";
                 std::cerr << "  mission-planer validate --input samples/remote_sensing_access.json\n";
                 std::cerr << "  cat request.json | mission-planer validate --stdin\n";
-                return mp::EXIT_VALIDATION;
+                return satellite::EXIT_VALIDATION;
             }
-            const auto request = mp::read_json_input(opts.input_path, opts.use_stdin);
+            const auto request = satellite::read_json_input(opts.input_path, opts.use_stdin);
             const auto result = mp::validate_request(request);
-            mp::write_json_stdout({
+            satellite::write_json_stdout({
                                       {"ok", result.ok},
                                       {"message", result.message},
                                       {"details", result.details},
                                   },
                                   opts.pretty);
-            return result.ok ? mp::EXIT_OK : mp::EXIT_VALIDATION;
+            return result.ok ? satellite::EXIT_OK : satellite::EXIT_VALIDATION;
         }
 
         if (opts.command == "run") {
@@ -174,15 +174,15 @@ int main(int argc, char** argv) {
                 std::cerr << "Error: --work-dir is required for run\n";
                 std::cerr << "  mission-planer run --input request.json --work-dir /tmp/task_xxx\n";
                 std::cerr << "  mission-planer run --stdin --work-dir /tmp/task_xxx --dry-run\n";
-                return mp::EXIT_VALIDATION;
+                return satellite::EXIT_VALIDATION;
             }
             if (!opts.input_path && !opts.use_stdin) {
                 std::cerr << "Error: --input request.json or --stdin is required for run\n";
                 std::cerr << "  mission-planer run --input request.json --work-dir /tmp/task_xxx\n";
                 std::cerr << "  cat request.json | mission-planer run --stdin --work-dir /tmp/task_xxx\n";
-                return mp::EXIT_VALIDATION;
+                return satellite::EXIT_VALIDATION;
             }
-            const auto request = mp::read_json_input(opts.input_path, opts.use_stdin);
+            const auto request = satellite::read_json_input(opts.input_path, opts.use_stdin);
             mp::RunContext ctx;
             ctx.work_dir = *opts.work_dir;
             ctx.dry_run = opts.dry_run;
@@ -193,29 +193,29 @@ int main(int argc, char** argv) {
                 ctx.trace_id = request.at("trace_id").get<std::string>();
             }
             const auto output = mp::run_planner(request, ctx);
-            mp::write_json_stdout(output, opts.pretty);
+            satellite::write_json_stdout(output, opts.pretty);
             if (output.value("status", "") == "no_result") {
-                return mp::EXIT_NO_RESULT;
+                return satellite::EXIT_NO_RESULT;
             }
-            return mp::EXIT_OK;
+            return satellite::EXIT_OK;
         }
 
         std::cerr << "Unknown command: " << opts.command << '\n';
         print_global_usage();
-        return mp::EXIT_USAGE;
+        return satellite::EXIT_USAGE;
     } catch (const std::exception& ex) {
-        mp::write_json_stdout({
+        satellite::write_json_stdout({
                                   {"ok", false},
                                   {"error", ex.what()},
                               },
                               false);
         const std::string msg = ex.what();
         if (msg.find("not found") != std::string::npos) {
-            return mp::EXIT_DEPENDENCY;
+            return satellite::EXIT_DEPENDENCY;
         }
         if (msg.find("validation") != std::string::npos || msg.find("Missing") != std::string::npos) {
-            return mp::EXIT_VALIDATION;
+            return satellite::EXIT_VALIDATION;
         }
-        return mp::EXIT_RETRYABLE;
+        return satellite::EXIT_RETRYABLE;
     }
 }

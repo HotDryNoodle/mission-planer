@@ -58,8 +58,6 @@ install_data(
   'samples/remote_sensing_access.json',
   'samples/attitude_estimation.json',
   'samples/downlink_window.json',
-  'samples/task_submit.json',
-  'samples/task_submit_short.json',
   'samples/short_access.json',
   install_dir: get_option('datadir') / 'mission-planer/samples',
 )

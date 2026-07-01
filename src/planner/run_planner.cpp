@@ -1,4 +1,4 @@
-#include "mp/planner/run_planner.hpp"
+#include "planner/run_planner.hpp"
 
 #include <chrono>
 #include <ctime>
@@ -7,11 +7,13 @@
 #include <random>
 #include <sstream>
 
-#include "mp/common/exit_codes.hpp"
-#include "mp/common/json_io.hpp"
-#include "mp/gmat/gmat_backend.hpp"
-#include "mp/geometry/window_merger.hpp"
-#include "mp/planner/validate.hpp"
+#include "satellite/json_io.hpp"
+#include "gmat/gmat_backend.hpp"
+#include "geometry/window_merger.hpp"
+#include "planner/validate.hpp"
+
+using satellite::write_json_file;
+using satellite::write_text_file;
 
 namespace mp {
 
@@ -117,7 +119,6 @@ nlohmann::json make_manifest() {
              {"when_to_use", "Compute optical access, attitude, or downlink windows before imaging or comm"},
              {"prerequisites", nlohmann::json::array({"orbit_state_current"})},
              {"typical_latency_sec", 120},
-             {"compose_with", nlohmann::json::array({"image.preprocess"})},
          }},
     };
 }

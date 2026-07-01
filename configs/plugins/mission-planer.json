@@ -26,7 +26,6 @@
   "agent_hints": {
     "when_to_use": "Compute optical access, attitude, or downlink windows before imaging or comm",
     "prerequisites": ["orbit_state_current"],
-    "typical_latency_sec": 120,
-    "compose_with": ["image.preprocess"]
+    "typical_latency_sec": 120
   }
 }

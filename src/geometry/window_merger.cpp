@@ -1,4 +1,4 @@
-#include "mp/geometry/window_merger.hpp"
+#include "geometry/window_merger.hpp"
 
 #include <chrono>
 #include <cmath>

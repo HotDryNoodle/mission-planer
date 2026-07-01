@@ -2,26 +2,11 @@
 
 GMAT-based mission planning CLI plugin (`mission.remote_sensing_access`).
 
-This repository contains **planning business logic only**. Task orchestration and other plugins live in sibling repos under `~/projects/`.
-
-## Multi-repo layout
-
-| Repository | Path | Role |
-|------------|------|------|
-| **satellite-plugin-sdk** | `~/projects/satellite-plugin-sdk` | `satellite_common`, schemas, `satellite-cli-plugin` skill |
-| **task-manager** | `~/projects/task-manager` | TaskManager + task-client + ZMQ |
-| **mission-planer** | `~/projects/mission-planer` | This repo — GMAT planning plugin |
-| **image-preprocess** | `~/projects/image-preprocess` | Placeholder plugin |
-| **satellite-workspace** | `~/projects/satellite-workspace` | Integration: `build-all-local.sh`, `plugins.index.json` |
-
-```
-Agent -> task-manager -> plugins (manifest + CLI) -> GMAT (mission-planer)
-```
+This repository contains **planning business logic only** — three mission planning scenarios backed by GMAT.
 
 ## Build
 
 ```bash
-cd ~/projects/mission-planer
 meson subprojects download
 meson setup build
 meson compile -C build
@@ -29,34 +14,10 @@ meson compile -C build
 
 Depends on **satellite-plugin-sdk** via Meson wrap (`subprojects/satellite-plugin-sdk.wrap`).
 
-## Contract test (run before integration)
+## Contract test
 
 ```bash
 ./scripts/contract-test-mission-planer.sh
-```
-
-## Environment (TaskManager integration)
-
-Prefer `SATELLITE_*` variables (see `task-manager` README):
-
-| Variable | Purpose |
-|----------|---------|
-| `SATELLITE_PLUGIN_INDEX` | `plugins.index.json` (preferred) |
-| `SATELLITE_PLUGIN_DIR` | Colon-separated manifest directories |
-| `SATELLITE_PLUGIN_BIN` | Plugin executable search root |
-| `SATELLITE_TASK_WORK_ROOT` | Task work directories |
-
-Legacy `MISSION_PLANER_ROOT` / `MISSION_PLANER_BIN` are deprecated (one release).
-
-## Full-stack integration
-
-```bash
-cd ~/projects/satellite-workspace
-./scripts/build-all-local.sh
-source install/env.sh
-./install/bin/task-client --plugin-index "$SATELLITE_PLUGIN_INDEX" \
-  --plugin-bin "$SATELLITE_PLUGIN_BIN" \
-  ~/projects/mission-planer/samples/task_submit_short.json
 ```
 
 ## Business scenarios
@@ -100,13 +61,3 @@ Set `RUN_GMAT_INTEGRATION=1` with `./scripts/build_and_smoke.sh` for full GMAT r
 | 4 | no business result |
 | 5 | retryable failure |
 | 6 | fatal failure |
-
-## New plugins
-
-Use the skill in **satellite-plugin-sdk**:
-
-```bash
-cp -r ~/projects/satellite-plugin-sdk/.cursor/skills/satellite-cli-plugin ~/.cursor/skills/
-```
-
-See `~/projects/satellite-plugin-sdk/.cursor/skills/satellite-cli-plugin/SKILL.md`.

@@ -1,5 +1,7 @@
 # mission-planer
 
+> **Deprecated (2026-07-09)** — This repository has been renamed to [`access-computer`](https://github.com/HotDryNoodle/access-computer). Use `satellite-workspace` with `plugins/access-computer/` for all new work. Distributed mission orchestration remains in [`task-manager`](https://github.com/HotDryNoodle/task-manager).
+
 GMAT-based mission planning CLI plugin (`mission.remote_sensing_access`).
 
 This repository contains **planning business logic only** — three mission planning scenarios backed by GMAT.
